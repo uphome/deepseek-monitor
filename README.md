@@ -1,3 +1,5 @@
+[中文版](README_zh.md)
+
 # DeepSeek Monitor
 
 A VSCode extension that monitors DeepSeek API balance and token usage in real time, with an interactive dashboard — designed for use with Claude Code.
