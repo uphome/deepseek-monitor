@@ -73,7 +73,11 @@
       },
       {
         "command": "deepseek-monitor.generateMockData",
-        "title": "DeepSeek: 生成测试数据"
+        "title": "DeepSeek: 生成测试数据（开发）"
+      },
+      {
+        "command": "deepseek-monitor.clearTestData",
+        "title": "DeepSeek: 清除测试数据（开发）"
       }
     ],
     "menus": {
@@ -84,7 +88,8 @@
         { "command": "deepseek-monitor.showDashboard" },
         { "command": "deepseek-monitor.showUsageHistory" },
         { "command": "deepseek-monitor.showTokenUsage" },
-        { "command": "deepseek-monitor.generateMockData" }
+        { "command": "deepseek-monitor.generateMockData" },
+        { "command": "deepseek-monitor.clearTestData" }
       ]
     }
   },
