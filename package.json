@@ -1,0 +1,105 @@
+{
+  "name": "deepseek-monitor",
+  "displayName": "DeepSeek Monitor",
+  "description": "实时监控 DeepSeek API 余额与用量",
+  "version": "0.1.0",
+  "publisher": "your-publisher-name",
+  "icon": "resources/icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/deepseek-monitor"
+  },
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": ["Other"],
+  "keywords": ["deepseek", "api", "monitor", "balance", "ai"],
+  "activationEvents": ["onStartupFinished"],
+  "main": "./out/extension.js",
+  "contributes": {
+    "configuration": {
+      "title": "DeepSeek Monitor",
+      "properties": {
+        "deepseekMonitor.apiKey": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "DeepSeek API Key（建议通过命令面板设置，避免明文保存）。在 [DeepSeek Platform](https://platform.deepseek.com/api_keys) 获取。"
+        },
+        "deepseekMonitor.refreshInterval": {
+          "type": "number",
+          "default": 60,
+          "minimum": 10,
+          "maximum": 3600,
+          "description": "自动刷新间隔（秒），最小 10 秒"
+        },
+        "deepseekMonitor.lowBalanceThreshold": {
+          "type": "number",
+          "default": 5,
+          "minimum": 0,
+          "description": "余额低于此值（CNY）时发出警告"
+        },
+        "deepseekMonitor.showInStatusBar": {
+          "type": "boolean",
+          "default": true,
+          "description": "在状态栏显示余额"
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "deepseek-monitor.refresh",
+        "title": "DeepSeek: 刷新余额"
+      },
+      {
+        "command": "deepseek-monitor.setApiKey",
+        "title": "DeepSeek: 设置 API Key（安全存储）"
+      },
+      {
+        "command": "deepseek-monitor.clearApiKey",
+        "title": "DeepSeek: 清除 API Key"
+      },
+      {
+        "command": "deepseek-monitor.showDashboard",
+        "title": "DeepSeek: 打开用量面板"
+      },
+      {
+        "command": "deepseek-monitor.showUsageHistory",
+        "title": "DeepSeek: 查看历史记录"
+      },
+      {
+        "command": "deepseek-monitor.showTokenUsage",
+        "title": "DeepSeek: 查看 Token 用量"
+      },
+      {
+        "command": "deepseek-monitor.generateMockData",
+        "title": "DeepSeek: 生成测试数据"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        { "command": "deepseek-monitor.refresh" },
+        { "command": "deepseek-monitor.setApiKey" },
+        { "command": "deepseek-monitor.clearApiKey" },
+        { "command": "deepseek-monitor.showDashboard" },
+        { "command": "deepseek-monitor.showUsageHistory" },
+        { "command": "deepseek-monitor.showTokenUsage" },
+        { "command": "deepseek-monitor.generateMockData" }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "lint": "eslint src --ext ts"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.85.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.0.0",
+    "typescript": "^5.3.0"
+  }
+}
