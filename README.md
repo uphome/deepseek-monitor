@@ -13,48 +13,120 @@
 - 🔐 **安全存储** — API Key 存于 VSCode Secrets，不落明文
 - ⚡ **实时更新** — 余额定时轮询 + Token 文件监听，面板数字无闪烁动态刷新
 
-## 安装
+## 环境要求
 
-### 从 VSIX 安装
+开始前请确保你的开发环境满足以下条件：
+
+| 依赖 | 最低版本 | 检查命令 |
+|------|----------|----------|
+| Node.js | >= 18 | `node -v` |
+| npm | >= 9 | `npm -v` |
+| VSCode | >= 1.85.0 | `code --version` |
+| Git | 任意 | `git --version` |
 
 ```sh
-# 编译
+# 确认 Node 版本
+node -v    # 应输出 v18.x 或更高
+
+# 确认 npm 版本
+npm -v     # 应输出 9.x 或更高
+```
+
+## 安装
+
+### 方式一：从源码编译
+
+```sh
+# 1. 克隆仓库
+git clone https://github.com/uphome/deepseek-monitor.git
+cd deepseek-monitor
+
+# 2. 安装依赖
 npm install
+
+# 3. 编译 TypeScript
 npm run compile
 
-# 打包
+# 4. 打包为 .vsix（需要 vsce，首次使用会自动安装）
 npx @vscode/vsce package
 
-# 安装
+# 5. 安装到 VSCode
 code --install-extension deepseek-monitor-0.1.0.vsix
 ```
+
+### 方式二：VSCode Marketplace（发布后）
+
+在 VSCode 扩展商店搜索 `DeepSeek Monitor`，点击安装。
 
 ### 开发调试
 
 ```sh
-git clone <repo-url>
+git clone https://github.com/uphome/deepseek-monitor.git
 cd deepseek-monitor
 npm install
-npm run watch   # 持续编译
+npm run watch    # 持续监听文件变更并编译
 ```
 
-在 VSCode 中按 `F5` 启动 Extension Development Host。
+然后在 VSCode 中打开项目，按 `F5` 启动 Extension Development Host。修改源码后编译产物自动更新。
 
-## 依赖
+## 配置
 
-| 依赖 | 版本 |
-|------|------|
-| Node.js | >= 18 |
-| VSCode | >= 1.85.0 |
-| TypeScript | ^5.3 |
+### 1. 获取 API Key
 
-## 使用方法
+访问 [DeepSeek Platform](https://platform.deepseek.com/api_keys) 创建 API Key（格式：`sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`）。
 
-1. `Ctrl+Shift+P` → **DeepSeek: 设置 API Key（安全存储）**
-2. 粘贴你的 API Key（以 `sk-` 开头），从 [DeepSeek Platform](https://platform.deepseek.com/api_keys) 获取
-3. 右下角状态栏即显示余额
+### 2. 设置 API Key
 
-### 命令列表
+在 VSCode 中：
+
+1. `Ctrl+Shift+P` 打开命令面板
+2. 搜索并运行 **DeepSeek: 设置 API Key（安全存储）**
+3. 粘贴你的 API Key
+4. Key 将加密存入系统密钥链，不会以明文写入任何文件
+
+### 3. 验证
+
+设置成功后，VSCode 右下角状态栏立即显示余额：
+
+```
+┌─────────────────────────────────────┐
+│ $(circuit-board) ¥4.52 | Tokens 3.73M │
+└─────────────────────────────────────┘
+```
+
+### 4. 可选配置
+
+在 VSCode 设置中搜索 `deepseekMonitor`：
+
+| 配置项 | 默认值 | 说明 |
+|--------|--------|------|
+| `deepseekMonitor.refreshInterval` | `60` | 余额刷新间隔（秒），最小 10 |
+| `deepseekMonitor.lowBalanceThreshold` | `5` | 余额低于此值发出警告（CNY） |
+| `deepseekMonitor.showInStatusBar` | `true` | 是否在状态栏显示 |
+
+## 使用
+
+### 状态栏
+
+右下角状态栏实时显示余额及当前项目 Token 消耗。鼠标悬停查看详情，点击打开完整面板。
+
+余额颜色预警：
+- 绿色 / 默认：余额充足
+- 黄色：余额低于阈值（默认 ¥5）
+- 红色：余额已耗尽
+
+### 用量面板
+
+`Ctrl+Shift+P` → **DeepSeek: 打开用量面板**
+
+面板包含：
+- 账户余额卡片（总余额 + 今日消耗）
+- Token 用量卡片（Input / Output / Cache Read / 缓存覆盖率）
+- 7 天每日消耗折线图（悬停查看详情）
+- 近 7 天消耗明细表
+- 模型分布与会话明细
+
+### 全部命令
 
 | 命令 | 说明 |
 |------|------|
@@ -62,18 +134,8 @@ npm run watch   # 持续编译
 | `DeepSeek: 设置 API Key（安全存储）` | 配置 API Key |
 | `DeepSeek: 清除 API Key` | 删除已保存的 Key |
 | `DeepSeek: 打开用量面板` | 打开可视化面板 |
-| `DeepSeek: 查看 Token 用量` | 同上 |
-| `DeepSeek: 生成测试数据` | 生成 7 天模拟数据用于调试 |
-
-## 配置
-
-在 VSCode 设置中搜索 `deepseekMonitor`：
-
-| 配置项 | 默认值 | 说明 |
-|--------|--------|------|
-| `deepseekMonitor.refreshInterval` | `60` | 余额刷新间隔（秒），最小 10 |
-| `deepseekMonitor.lowBalanceThreshold` | `5` | 低余额预警阈值（CNY） |
-| `deepseekMonitor.showInStatusBar` | `true` | 是否在状态栏显示 |
+| `DeepSeek: 生成测试数据（开发）` | 生成 7 天模拟数据用于调试 |
+| `DeepSeek: 清除测试数据（开发）` | 清除所有测试数据 |
 
 ## 架构
 
